@@ -10,7 +10,7 @@ function ShowCard({show}){
 
     useEffect(() => {
         let ignore = false;
-        //setCast({status: "loading", names: [] });
+        
 
         fetchJson(`https://api.tvmaze.com/shows/${show.id}/cast`).then((data) => {
             if(ignore){

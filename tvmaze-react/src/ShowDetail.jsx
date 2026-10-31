@@ -10,11 +10,9 @@ function ShowDetail(){
     const {id} = useParams();
     const validId = /^\d+$/.test(id);
 
-    const[show, setShow] = useState(null);
-    const[showStatus, setShowStatus] = useState("loading");
-    const[showError, setShowError] = useState("");
-    const[cast, setCast] = useState([]);
-    const[castStatus, setCastStatus] = useState("loading");
+    
+    const[showResult, setShowResult] = useState(null);
+    const[castResult, setCastResult] = useState(null);
 
     // Load the show
     useEffect(() => {
@@ -22,22 +20,19 @@ function ShowDetail(){
             return;
         }
         let ignore = false;
-        //setShowStatus("loading");
-        //setShow(null);
 
         fetchJson(`https://api.tvmaze.com/shows/${id}`).then((data) =>{
-            if(ignore){
-                return;
+            if(!ignore){
+                setShowResult({id, show:data});
             }
-            setShow(data);
-            setShowStatus("done");
+    
         })
         .catch((err) => {
             if(ignore){
                 return;
             }
-            setShowError(err.status === 404 ? "We couldn't find a show with that id." : errorMsg(err));
-            setShowStatus("error");
+            const message = err.status === 404 ? "We couldn't find a show with that id." : errorMsg(err);
+            setShowResult({id, error:message});
         });
 
         return() =>{
@@ -51,21 +46,17 @@ function ShowDetail(){
             return;
         }
         let ignore =  false;
-        //setCastStatus("loading");
-        //setCast([]);
-
+       
         fetchJson(`https://api.tvmaze.com/shows/${id}/cast`).then((data) =>{
-            if(ignore){
-                return;
+            if(!ignore){
+                setCastResult({id, status: "done", cast: data.filter((c) => c.person).slice(0, max_cast)});
             }
-            setCast(data.filter((c) => c.person).slice(0, max_cast));
-            setCastStatus("done");
+          
         })
         .catch((err) => {
             if(ignore){
-                return;
+                setCastResult({id, status: err.status === 429 ? "limited" : "error", cast: []});
             }
-            setCastStatus(err.status === 429 ? "limited" : "error");
         });
 
         return() =>{
@@ -73,19 +64,24 @@ function ShowDetail(){
         };
     }, [id, validId]);
 
+    const showLoading = !showResult || showResult.id !== id;
+    const castStatus = castResult && castResult.id === id ? castResult.status : "loading";
+    const cast = castResult && castResult.id === id ? castResult.cast : [];
     const bLink = <Link to = "/">Back to Gallery</Link>;
 
     if(!validId){
         return <p class = "status-error">"{id}"is not a valid show ID. {bLink}</p>;
     }
-    if(showStatus === "loading"){
+    if(showLoading){
         return <p class = "status">Loading Show...</p>;
     }
-    if(showStatus === "error"){
-        return <p class = "status-error">{showError} {bLink}</p>;
+    if(showResult.error){
+        return <p class = "status-error">{showResult.error} {bLink}</p>;
     }
 
+    const show = showResult.show;
     const summary = stripHTML(show.summary);
+
 
     return(
         <article class = "detail">

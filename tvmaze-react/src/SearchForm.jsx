@@ -4,13 +4,13 @@ function SearchForm({initialTerm, onSearch, disabled}){
     const [text, setText] = useState(initialTerm);
 
     function handleSubmit(event){
-        event.preventdefault();
+        event.preventDefault();
         onSearch(text.trim());
     }
     
     return(
-        <form id = "search-from" onSubmit ={handleSubmit}>
-            <label id = "search-input">Search for a Show Title or keyword</label>
+        <form id = "search-form" onSubmit ={handleSubmit}>
+            <label htmlFor= "search-input">Search for a Show Title or keyword</label>
             <div>
                 <input 
                 id = "search-input" 

@@ -14,7 +14,7 @@ function CastList({status, cast}){
             {cast.map((entry) => (
                 <li key={`${entry.person.id} - ${entry.character?.id}`}>
                     <strong>{entry.person.name}</strong>
-                    {entry.character?.name ? ` as ${entry.character.name}` : ""};
+                    {entry.character?.name ? ` as ${entry.character.name}` : ""}
                 </li>
             ))}
         </ul>
