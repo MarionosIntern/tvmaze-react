@@ -5,8 +5,9 @@ A searchable TV show gallery made with React, Vite, and React Router. It uses th
 ## How to Run
 
 - Go in a Terminal
-1. npm install
-2. npm run dev
+1. cd tvmaze-react
+2. npm install
+3. npm run dev
 
 ## React Concepts
 
